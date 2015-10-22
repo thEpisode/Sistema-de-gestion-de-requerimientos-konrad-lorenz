@@ -8,7 +8,10 @@ namespace WebApp.Controllers
 {
     public class AgentController : Controller
     {
-        // GET: Agent
+        public ActionResult Login()
+        {
+            return View();
+        }
         public ActionResult Index()
         {
             return View();
