@@ -111,6 +111,10 @@
             $("#CheckStatusRequirementBox").show();
             $("#CreateRequirementBox").hide();
         }
+        function reloadStatus() {
+            UniversalHelper.slideOut("#response-status-section");
+            UniversalHelper.slideIn("#request-status-section");
+        }
 
         function searchButton_OnClick() {
             if ($("#ticket").val().length > 0) {
