@@ -112,6 +112,7 @@
             $("#CreateRequirementBox").hide();
         }
         function reloadStatus() {
+            $("#loading-status-section").hide();
             UniversalHelper.slideOut("#response-status-section");
             UniversalHelper.slideIn("#request-status-section");
         }
@@ -131,22 +132,27 @@
 
                         switch (data.Status) {
                             case 0:
+                                $("#response-status-section>h2").text("EN ESPERA");
                                 $("#response-status-section>p").text("No ha sido atendido por un agente");
                                 $("#response-status-section>img").attr("src", "/Content/User/images/first-step.png");
                                 break;
                             case 1:
+                                $("#response-status-section>h2").text("EN PROGRESO");
                                 $("#response-status-section>p").text("El agente está trabajando en ello");
                                 $("#response-status-section>img").attr("src", "/Content/User/images/second-step.png");
                                 break;
                             case 2:
+                                $("#response-status-section>h2").text("RECHAZADO");
                                 $("#response-status-section>p").text("El agente ha rechazado el requerimiento");
                                 $("#response-status-section>img").attr("src", "/Content/User/images/rejected-headline.png");
                                 break;
                             case 3:
+                                $("#response-status-section>h2").text("FINALIZADO");
                                 $("#response-status-section>p").text("¡El agente ha finalizado su trabajo!, por favor califica el servicio");
                                 $("#response-status-section>img").attr("src", "/Content/User/images/third-step.png");
                                 break;
                             case 4:
+                                $("#response-status-section>h2").text("FINALIZADO");
                                 $("#response-status-section>p").text("Este requerimiento ya fue finalizado y se recibió la calificación");
                                 break;
                             default:
@@ -155,7 +161,16 @@
                     },
                     error: function (data) {
                         console.log(data);
-                        alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                        switch (data.status) {
+                            case 404:
+                                reloadStatus();
+                                alert('No se encontró el ticket, revisa que está bien escrito.')
+                                break;
+                            default:
+                                reloadStatus();
+                                alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                                break;
+                        }
                     }
                 });
             }
