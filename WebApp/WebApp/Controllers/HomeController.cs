@@ -22,7 +22,7 @@ namespace WebApp.Controllers
             var documents = collection.Find(new BsonDocument());
             
 
-            NewMethod(collection);
+            //NewMethod(collection);
 
             int i = 0;
             //https://www.mongodb.com/blog/post/introducing-20-net-driver?jmp=docs&_ga=1.196294954.721581952.1441258055
@@ -43,17 +43,13 @@ namespace WebApp.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult CreateRequirement()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult CheckStatusRequirement()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

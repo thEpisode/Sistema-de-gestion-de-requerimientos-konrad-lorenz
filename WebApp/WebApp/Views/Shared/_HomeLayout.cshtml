@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- START HEAD -->
+    <meta charset="utf-8">
+    <!-- START TITLE -->
+    <title>@ViewBag.Title</title>
+    <!-- END TITLE -->
+    <!-- START META, DESCRIPTION, KEYWORDS, AUTHOR -->
+    <meta name="description" content="A Template by Carino Technologies" />
+    <meta name="keywords" content="HTML, CSS, JavaScript" />
+    <meta name="author" content="carinotechnologies" />
+    <!-- END META, DESCRIPTION, KEYWORDS, AUTHOR -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- START THEME STYLE -->
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/normal.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/style.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/headhesive.css">
+    <link href="~/Content/User/css/animate.css" rel="stylesheet">
+
+    <!-- END THEME STYLE -->
+    <!-- START FONTELLO ICONS STYLESHEET -->
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/fontello.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/fontello-ie7.css">
+    <!-- END FONTELLO ICONS STYLESHEET -->
+    <!-- START MAGNIFIC POPUP STYLESHEET -->
+    <link rel="stylesheet" type="text/css" href="~/Content/User/css/magnific-popup.css">
+    <!-- END MAGNIFIC POPUP STYLESHEET -->
+    <!-- LOAD GOOGLE FONT OPEN SANS -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,600,700" rel="stylesheet" type="text/css">
+    <!-- END GOOGLE FONT OPEN SANS -->
+    <!-- START AJAX WEBFONTS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+    <!-- END AJAX WEBFONTS -->
+    <!-- START MOBILE DETECT -->
+    <script>if (/mobile/i.test(navigator.userAgent)) document.documentElement.className += ' w-mobile';</script>
+    <!-- END MOBILE DETECT -->
+    <!-- START FAVICON -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <!-- EDN FAVICON -->
+    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+</head><!-- END HEAD -->
+<body>
+    @*@Html.Partial("_Modal")*@
+    <!-- START BODY TAG -->
+    <!-- START HEADER -->
+    <!-- SCROLL DIV #boxscroll by nicescroll -->
+
+    <div tabindex="1000" style="overflow-y: auto;" id="boxscroll">
+
+
+        <!-- CHANGEABLE UNIQUE SECTOIN ID -->
+        <section id="home">
+
+            <!-- START FIXED HEADER DIV -->
+            <div class="banner">
+                <!-- START CONTAINER -->
+                <div class="w-container container">
+                    <div class="w-row">
+
+                        <!-- START COLUMN 3 -->
+                        <div class="w-col w-col-3 logo">
+                            <!-- START LOGO -->
+                            <a href="#"><img class="logo" src="~/Content/User/images/logo.png" alt="FLAT ASPHALT"></a>
+                            <!-- END LOGO -->
+                        </div><!-- END COLUMN 3 -->
+                        <!-- START COLUMN 9 -->
+                        <div class="w-col w-col-9">
+
+                            <!-- START NAVIGATION -->
+                            <div class="w-nav navbar" data-collapse="medium" data-animation="default" data-duration="400" data-contain="1">
+                                <div class="w-container nav">
+                                    <!-- START CONTAINER -->
+                                    <!-- START NAVIGATION LINKS -->
+                                    <nav class="w-nav-menu nav-menu" role="navigation">
+
+                                        <a class="w-nav-link menu-li" href="@Url.Action("Index","Home")">INICIO</a>
+                                        <a class="w-nav-link menu-li" href="index.html#features">SOLICITAR</a>
+                                        <a class="w-nav-link menu-li" href="index.html#service">REVISAR</a>
+                                        <a class="w-nav-link menu-li" href="index.html#portfolio" style="background-color:#27AE60!important; color:#ffffff;">SOY AGENTE</a>
+                                        
+
+                                    </nav>
+                                    <!-- END NAVIGATION LINKS -->
+                                    <!-- START MOBILE NAVIGATION BUTTON * DO NOT DELETE THIS DIV* -->
+                                    <div class="w-nav-button">
+                                        <div class="w-icon-nav-menu"></div>
+                                    </div><!-- END MOBILE NAVIGATION BUTTON -->
+
+                                </div>
+                                <!-- END CONTAINER -->
+                            </div>
+                            <!-- END NAVIGATION -->
+                        </div>
+                        <!-- END COLUMN 9 -->
+                    </div>
+                </div>
+                <!-- END CONTAINER -->
+            </div>
+            <!-- END FIXED HEADER DIV -->
+        </section>
+        <!-- END SECTION -->
+        <!-- END HEADER -->
+
+        <div class="header-parallax" data-stellar-background-ratio="0.5">
+            <div class="slidersection">
+
+
+
+                <div class="overlay">
+
+                    <div class="center fixed-content">
+                        <div class="center-fix">
+                            <h1 class="underline animated fadeInDown">Requerimientos de la pequeña empresa</h1>
+                            <h4 class="animated fadeInUp delay-05s" style="margin-bottom: 50px;">Solicita o revisa el estado de tu <strong class="green">requerimiento</strong></h4>
+                            <a class="button animated fadeInUp delay-1s" href="index.html#container-body" style="margin-right: 20px;">
+                                <span>
+                                    <i class="cogelegance-icons-"></i>
+                                </span>
+                                Solicitar
+                            </a>
+                            <a class="button border animated fadeInUp delay-1s" href="index.html#contact">Revisa el estado</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--///////////////////////////////////////////////////////
+
+               // End slider section
+
+               //////////////////////////////////////////////////////////-->
+        <div id="container-body">
+            @RenderBody()
+        </div>
+        
+    </div>
+
+    
+
+    <div class="footer row-back">
+        <div class="w-container wrap-normal center">© <strong>Carino Technologies</strong> 2014 - <span class="green">Exclusive</span> On Themeforest </div>
+    </div>
+
+    <!--///////////////////////////////////////////////////////
+
+    // End Footer section
+
+    //////////////////////////////////////////////////////////-->
+   
+
+    <!-- START JQUERY PLUGINS LOAD -->
+    <script src="~/Content/User/js/jquery.js"></script>
+    <script src="~/Content/User/js/modernizr.js"></script>
+    <script src="~/Content/User/js/normal.js"></script>
+    <script src="~/Content/User/js/carousels.js"></script>
+    <script src="~/Content/User/js/jquery.stellar.js"></script>
+    <script src="~/Content/User/js/classie.js"></script>
+    <script src="~/Content/User/js/jquery.mixitup.js"></script>
+    <script src="~/Content/User/js/testimonials.js"></script>
+    <script src="~/Content/User/js/jquery.nicescroll.js"></script>
+    <script src="~/Content/User/js/rotating-text.js"></script>
+    <script src="~/Content/User/js/jquery.magnific-popup.js"></script>
+    <script src="~/Content/User/js/headhesive.min.js"></script>
+    <script src="~/Content/User/js/waypoints.min.js"></script>
+    <script src="~/Content/User/js/scripts.js"></script>
+    <script src="~/Scripts/modal.js"></script>
+    <!-- END JQUERY PLUGINS LOAD -->
+
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
