@@ -1,1 +1,32 @@
-﻿checkstatus
+﻿<div class="own-parallax-back status-parallax">
+    <div class="opcaity status-opacity">
+        <div class="w-container wrap">
+
+            <div class="center">
+                <section class="data-container">
+                    <section id="request-status-section">
+                        <h1 class="underline">ESTADO DEL REQUERIMIENTO</h1>
+                        <p>Aquí podrás revisar cómo está el requerimiento que solicitaste.</p>
+
+
+                        <div class="w-form">
+                            <label for="ticket"></label>
+                            <input class="w-input" type="text" id="ticket" placeholder="Ingresa el número de ticket" name="cf_name" style="text-align:center;">
+                            <br />
+                            <input class="button medium" type="submit" onclick="javascript: searchButton_OnClick()" value="Buscar">
+                        </div>
+                    </section>
+                    <section id="loading-status-section" style="display:none;">
+                        <h2 class="loading-text-white" style="margin-top:35px;">Cargando</h2>
+                        <div class="spinner-white"></div>
+                    </section>
+                    <section id="response-status-section" style="display:none;">
+                        <img src="#" alt="status requirement" />
+                        <p></p>
+                    </section>
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>

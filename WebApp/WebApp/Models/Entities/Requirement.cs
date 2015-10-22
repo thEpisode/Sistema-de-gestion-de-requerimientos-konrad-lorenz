@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 using WebApp.Models.Enums;
 
 namespace WebApp.Models.Entities
-{
-    [BsonIgnoreExtraElements]
+{    
     class Requirement
     {
         [BsonId]
-        ObjectId Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        ObjectId _id { get; set; }
         public int Rate { get; set; }
         public Status Status { get; set; }
+        public string Ticket { get; set; }
     }
 }

@@ -659,6 +659,7 @@
     <Content Include="Content\User\images\clients\logo2.png" />
     <Content Include="Content\User\images\clients\logo3.png" />
     <Content Include="Content\User\images\clients\logo4.png" />
+    <Content Include="Content\User\images\first-step.png" />
     <Content Include="Content\User\images\footer-logo.png" />
     <Content Include="Content\User\images\header\header-parallax.jpg" />
     <Content Include="Content\User\images\logo.png" />
@@ -672,6 +673,8 @@
     <Content Include="Content\User\images\portfolio\thumbnail-07.jpg" />
     <Content Include="Content\User\images\portfolio\thumbnail-08.jpg" />
     <Content Include="Content\User\images\portfolio\thumbnail-09.jpg" />
+    <Content Include="Content\User\images\rejected-headline.png" />
+    <Content Include="Content\User\images\second-step.png" />
     <Content Include="Content\User\images\services\branding.png" />
     <Content Include="Content\User\images\services\motion.png" />
     <Content Include="Content\User\images\services\print.png" />
@@ -680,6 +683,7 @@
     <Content Include="Content\User\images\testimonials\image1.png" />
     <Content Include="Content\User\images\testimonials\image2.png" />
     <Content Include="Content\User\images\testimonials\image3.png" />
+    <Content Include="Content\User\images\third-step.png" />
     <Content Include="Content\User\images\underline-headline.png" />
     <Content Include="Content\User\js\carousels.js" />
     <Content Include="Content\User\js\classie.js" />
@@ -820,6 +824,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\UniversalHelper.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

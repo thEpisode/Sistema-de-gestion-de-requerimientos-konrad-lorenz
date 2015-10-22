@@ -182,7 +182,7 @@ padding: 100px 0 90px;
 * PARALLAX CLASSIES
 *******************************/
 
-.parallax-back {
+.own-parallax-back {
   background: url(../images/back.png) no-repeat;
   background-size: cover;
   background-attachment: fixed;

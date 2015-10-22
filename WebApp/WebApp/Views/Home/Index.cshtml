@@ -3,8 +3,158 @@
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
 
 }
-<p>hola</p>
+
+<style>
+    #CheckStatusRequirementBox{
+        height:432px;
+    }
+    .status-opacity{
+        min-height:432px;
+        height:432px;
+    }
+    .status-parallax{
+        min-height:432px;
+        height:432px;
+    }
+    .data-container{
+        display:inline-flex;
+    }
+    .data-container>section{
+        position:relative;
+    }
+    .loading-text{
+        color: #333 !important;
+        text-align:center;
+        font-size: 2em;
+    }
+    .loading-text-white{
+        color: #fff !important;
+        text-align:center;
+        font-size: 2em;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      background-color: #333;
+
+      margin: 35px auto;
+      -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+      animation: sk-rotateplane 1.2s infinite ease-in-out;
+    }
+
+    .spinner-white {
+      width: 40px;
+      height: 40px;
+      background-color: #fff;
+
+      margin: 35px auto;
+      -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+      animation: sk-rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @@-webkit-keyframes sk-rotateplane {
+      0% { -webkit-transform: perspective(120px) }
+      50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+      100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+    }
+
+    @@keyframes sk-rotateplane {
+      0% { 
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
+      } 50% { 
+        transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
+      } 100% { 
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+}
+</style>
+
+<section id="main-container">
+    <section id="loading">
+        <p class="loading-text">Cargando</p>
+        <div class="spinner"></div>
+    </section>
+    
+
+    <section id="CreateRequirementBox">
+        @Html.Partial("CreateRequirement")
+    </section>
+
+    <section id="CheckStatusRequirementBox">
+        @Html.Partial("CheckStatusRequirement")
+    </section>
+</section>
+
+
 
 @section Scripts{
+    <script>
+        (function () {
+            $("#loading").hide();
+            $("#CreateRequirementBox").hide();
+            $("#CheckStatusRequirementBox").hide();
 
+            var fakeLoading = setInterval(function () {
+
+            }, 1000);
+        })();
+
+        function createRequirements_OnClick() {
+            $("#CreateRequirementBox").show();
+            $("#CheckStatusRequirementBox").hide();
+        }
+
+        function CheckStatusRequirements_OnClick() {
+            $("#CheckStatusRequirementBox").show();
+            $("#CreateRequirementBox").hide();
+        }
+
+        function searchButton_OnClick() {
+            if ($("#ticket").val().length > 0) {
+                UniversalHelper.slideOut("#request-status-section");
+                UniversalHelper.slideIn("#loading-status-section");
+
+                $.ajax({
+                    url: "@Url.Action("GetStatusTicket", "Home")",
+                    type: "GET",
+                    data: "ticket=" + $("#ticket").val(),
+                    success: function (data) {
+                        UniversalHelper.slideOut("#loading-status-section");
+                        UniversalHelper.slideIn("#response-status-section");
+
+                        switch (data.Status) {
+                            case 0:
+                                $("#response-status-section>p").text("No ha sido atendido por un agente");
+                                $("#response-status-section>img").attr("src", "/Content/User/images/first-step.png");
+                                break;
+                            case 1:
+                                $("#response-status-section>p").text("El agente está trabajando en ello");
+                                $("#response-status-section>img").attr("src", "/Content/User/images/second-step.png");
+                                break;
+                            case 2:
+                                $("#response-status-section>p").text("El agente ha rechazado el requerimiento");
+                                $("#response-status-section>img").attr("src", "/Content/User/images/rejected-headline.png");
+                                break;
+                            case 3:
+                                $("#response-status-section>p").text("¡El agente ha finalizado su trabajo!, por favor califica el servicio");
+                                $("#response-status-section>img").attr("src", "/Content/User/images/third-step.png");
+                                break;
+                            case 4:
+                                $("#response-status-section>p").text("Este requerimiento ya fue finalizado y se recibió la calificación");
+                                break;
+                            default:
+                                break;
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                    }
+                });
+            }
+        }
+    </script>
 }
