@@ -8,6 +8,10 @@ namespace WebApp.Controllers
 {
     public class AgentController : Controller
     {
+        public AgentController()
+        {
+
+        }
         public ActionResult Login()
         {
             return View();
@@ -15,6 +19,12 @@ namespace WebApp.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult Authenticate()
+        {
+            return Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }
