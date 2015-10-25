@@ -2,22 +2,69 @@
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 
-<form class="login-form" action="index.html">
+<form class="login-form" id="login-form" method="post">
     <div class="login-wrap">
         <p class="login-img"><i class="icon_lock_alt"></i></p>
         <div class="input-group">
             <span class="input-group-addon"><i class="icon_profile"></i></span>
-            <input type="text" class="form-control" placeholder="Username" autofocus>
+            <input name="username" id="username" type="text" class="form-control" placeholder="Usuario" autofocus>
         </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="icon_key_alt"></i></span>
-            <input type="password" class="form-control" placeholder="Password">
+            <input name="password" id="password" type="password" class="form-control" placeholder="Contraseña">
         </div>
         @*<label class="checkbox">
             <input type="checkbox" value="remember-me"> Remember me
             <span class="pull-right"> <a href="#"> Forgot Password?</a></span>
         </label>*@
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+        
         @*<button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>*@
     </div>
+    <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>    
 </form>
+
+@section Scripts{
+    <script>
+        var isSession = null;
+        (function () {
+
+            if ('sessionStorage' in window && window['sessionStorage'] !== null) {
+                isSession = true;
+            } else {
+                alert('Por favor utiliza un navegador moderno para usar esta aplicación, como por ejemplo, Google Chrome o Microsoft Edge.');
+                isSession = false;
+            }
+        })();
+
+
+        $("#login-form").on("submit", function (event) {
+            $.ajax({
+                url: "@Url.Action("Authenticate", "Agent")",
+                type: "POST",
+                data: $("#login-form").serialize(),
+                success: function (data) {                    
+                    if (isSession) {
+                        console.log(data);
+                        sessionStorage.user = JSON.stringify(data);
+                        window.location.assign('@Url.Action("Index", "Agent")');
+                    }
+                },
+                error: function (data) {
+                    sessionStorage.removeItem("user");
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:                            
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+            event.preventDefault();
+        });
+    </script>
+}

@@ -17,9 +17,9 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private MongoClient mongoClient;
-        IMongoDatabase KonradRequirementsDatabase;
-        IMongoCollection<BsonDocument> usersCollection;
-        IMongoCollection<BsonDocument> requirementsCollection;
+        private IMongoDatabase KonradRequirementsDatabase;
+        private IMongoCollection<BsonDocument> usersCollection;
+        private IMongoCollection<BsonDocument> requirementsCollection;
 
         public HomeController()
         {

@@ -134,6 +134,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RequirementController.cs" />
+    <Compile Include="Controllers\UIController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -846,9 +848,17 @@
     <Content Include="Views\Agent\Index.cshtml" />
     <Content Include="Views\Agent\Login.cshtml" />
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\UI\Index.cshtml" />
+    <Content Include="Views\Requirement\Index.cshtml" />
+    <Content Include="Views\Requirement\MyRequirements.cshtml" />
+    <Content Include="Views\Requirement\GetForm.cshtml" />
+    <Content Include="Views\Agent\All.cshtml" />
+    <Content Include="Views\Agent\Create.cshtml" />
+    <Content Include="Views\Agent\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

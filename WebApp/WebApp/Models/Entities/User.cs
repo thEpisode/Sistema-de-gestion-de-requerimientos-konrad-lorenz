@@ -14,7 +14,7 @@ namespace WebApp.Models.Entities
     {
         [BsonId]
         ObjectId Id { get; set; }
-        public string user { get; set; }
+        public string username { get; set; }
         public string password { get; set; }
         public Role Role { get; set; }
     }
