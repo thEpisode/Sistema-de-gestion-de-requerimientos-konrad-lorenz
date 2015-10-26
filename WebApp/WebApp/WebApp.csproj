@@ -543,6 +543,7 @@
     <Content Include="Content\Admin\css\fullcalendar.css" />
     <Content Include="Content\Admin\css\jquery-jvectormap-1.2.2.css" />
     <Content Include="Content\Admin\css\jquery-ui-1.10.4.min.css" />
+    <Content Include="Content\Admin\css\jquery.dataTables.min.css" />
     <Content Include="Content\Admin\css\line-icons.css" />
     <Content Include="Content\Admin\css\owl.carousel.css" />
     <Content Include="Content\Admin\css\style-responsive.css" />
@@ -585,6 +586,11 @@
     <Content Include="Content\Admin\img\sample-img-2.png" />
     <Content Include="Content\Admin\img\sample-img-3.png" />
     <Content Include="Content\Admin\img\search-icon.jpg" />
+    <Content Include="Content\Admin\img\sort_asc.png" />
+    <Content Include="Content\Admin\img\sort_asc_disabled.png" />
+    <Content Include="Content\Admin\img\sort_both.png" />
+    <Content Include="Content\Admin\img\sort_desc.png" />
+    <Content Include="Content\Admin\img\sort_desc_disabled.png" />
     <Content Include="Content\Admin\img\Spain.png" />
     <Content Include="Content\Admin\img\user.jpg" />
     <Content Include="Content\Admin\img\user22.png" />
@@ -619,6 +625,7 @@
     <Content Include="Content\Admin\js\jquery-ui-1.9.2.custom.min.js" />
     <Content Include="Content\Admin\js\jquery.autosize.min.js" />
     <Content Include="Content\Admin\js\jquery.customSelect.min.js" />
+    <Content Include="Content\Admin\js\jquery.dataTables.min.js" />
     <Content Include="Content\Admin\js\jquery.flot.pie.js" />
     <Content Include="Content\Admin\js\jquery.hotkeys.js" />
     <Content Include="Content\Admin\js\jquery.js" />
@@ -814,6 +821,7 @@
     <Content Include="Content\Admin\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\Admin\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\Admin\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\Admin\assets\Spanish.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -863,6 +871,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Admin\images\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>

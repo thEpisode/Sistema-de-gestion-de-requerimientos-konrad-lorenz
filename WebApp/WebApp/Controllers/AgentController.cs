@@ -102,5 +102,30 @@ namespace WebApp.Controllers
             byte[] image = t.Result;
             return File(image, "image/jpg"); ;
         }
+
+        public async Task<ActionResult> GetAll()
+        {
+            var agentRole = Builders<BsonDocument>.Filter.Eq("Role", 1);
+            var managingRole = Builders<BsonDocument>.Filter.Eq("Role", 0);
+            var joinFilter = Builders<BsonDocument>.Filter.Or(agentRole, managingRole);
+
+            List<User> agents = new List<User>();
+
+            var documents = await usersCollection.Find(joinFilter).ToListAsync();
+            
+            if (documents.Count > 0)
+            {
+                foreach (var item in documents)
+                {
+                    User user = BsonSerializer.Deserialize<User>(item);
+                    agents.Add(user);
+                }
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(agents, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Json(new { Message = "No existe ningún agente registrado." }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
