@@ -128,12 +128,53 @@ namespace WebApp.Controllers
             return Json(new { Message = "No existe ningún agente registrado." }, JsonRequestBehavior.AllowGet);
         }
 
+        public async Task<ActionResult> GetByUsername(string username)
+        {
+            if (!String.IsNullOrWhiteSpace(username))
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq("Username", username);
+                var document = await usersCollection.Find(filter).FirstOrDefaultAsync();
+
+                if (document != null)
+                {
+                    User user = BsonSerializer.Deserialize<User>(document);
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                    return Json(user, JsonRequestBehavior.AllowGet);
+                    
+                }
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { Message = "El usuario no existe." }, JsonRequestBehavior.AllowGet);
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Por favor indique qué usuario quiere modificar" }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateAgent(User user)
         {
             await usersCollection.InsertOneAsync(user.ToBsonDocument());
             Response.StatusCode = (int)HttpStatusCode.Created;
             return Json(new { Message = "Usuario registrado." }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditAgent(User user)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("Username", user.Username);
+            
+            var update = Builders<BsonDocument>.Update
+            .Set("Password", user.Password)
+            .Set("Name", user.Name)
+            .Set("Lastname", user.Lastname)
+            .Set("Role", user.Role)
+            .CurrentDate("lastModified");
+
+            var result = await usersCollection.UpdateOneAsync(filter, update);
+
+            Response.StatusCode = (int)HttpStatusCode.OK;
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+            
         }
     }
 }

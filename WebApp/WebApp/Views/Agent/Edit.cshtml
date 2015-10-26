@@ -4,5 +4,181 @@
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 }
 
-<h2>Edit</h2>
+<section class="row col-xs-6 col-md-offset-3" id="find-user-box">
+    <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-left">Busca el usuario que quieres editar</div>
+            </div>
+            <div class="panel-body">
+                <div class="padd">
 
+                    <div class="form quick-post">
+                        <!-- Edit profile form (not working)-->
+                        <form class="form-horizontal" id="find-user" method="get">
+                            <!-- Title -->
+                            <div class="form-group">
+                                <label class="control-label col-lg-2" for="username">Usuario</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="user" name="username">
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="form-group">
+                                <!-- Buttons -->
+                                <div class="col-lg-offset-5 col-lg-9">
+                                    <button type="submit" class="btn btn-primary">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+
+                <div class="widget-foot" style="display:none;">
+                    <!-- Footer goes here -->
+                    <p>Buscando usuario...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="row col-xs-12" id="edit-user-box">
+    <form class="form-validate form-horizontal" id="create_agent_form" method="post" action="" novalidate="novalidate">
+        <div class="form-group ">
+            <label for="name" class="control-label col-lg-2">Nombre <span class="required">*</span></label>
+            <div class="col-lg-10">
+                <input class="form-control" id="name" name="name" minlength="2" type="text" required="">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <label for="lastname" class="control-label col-lg-2">Apellido <span class="required">*</span></label>
+            <div class="col-lg-10">
+                <input class="form-control" id="lastname" name="lastname" minlength="2" type="text" required="">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <label for="username" class="control-label col-lg-2">Usuario <span class="required">*</span></label>
+            <div class="col-lg-10">
+                <input class="form-control " disabled id="username" type="text" name="username" minlength="3" required="" placeholder="único e irrepetible">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <label for="Password" class="control-label col-lg-2">Contraseña <span class="required">*</span></label>
+            <div class="col-lg-10">
+                <input class="form-control " id="password" type="text" minlength="5" name="password" required="">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <label for="role" class="control-label col-lg-2">Rol <span class="required">*</span></label>
+            <div class="col-lg-10">
+                <select id="role" name="role" class="form-control m-bot15">
+                    <option disabled selected>Seleccione una opción</option>
+                    <option value="1">Agente</option>
+                    <option value="0">Agente administrador</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section Scripts{
+    
+    <!-- custom form validation script for this page-->
+    <script src="~/Content/Admin/js/form-validation-script.js"></script>
+
+    <script>
+        var User = null;
+
+        (function () {
+            $("#find-user-box").show();
+            $("#edit-user-box").hide();
+        })();
+
+        $("#edit-user-box").on("submit", function (event) {
+            $('#username').prop('disabled', false);
+            $.ajax({
+                url: "@Url.Action("EditAgent", "Agent")",
+                type: "POST",
+                data: $("#create_agent_form").serialize(),
+                success: function (data) {
+                    console.log(data);
+                    $('#username').prop('disabled', true);
+                    $("#find-user-box").show();
+                    $("#edit-user-box").hide();
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+            event.preventDefault();
+        });
+
+        $("#find-user").on("submit", function (event) {
+            $("#widget-foot").show();
+            $.ajax({
+                url: "@Url.Action("GetByUsername", "Agent")",
+                type: "GET",
+                data: $("#find-user").serialize(),
+                success: function (data) {
+                    console.log(data);
+                    User = data;
+                    setData();
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+            event.preventDefault();
+        });
+
+        function setData() {
+            if (User !== null) {
+                
+                $("#name").val(User.Name);
+                $("#lastname").val(User.Lastname);
+                $("#username").val(User.Username);
+                $("#password").val(User.Password);
+                $("#role").val(User.Role);
+
+                $("#edit-user-box").show();
+                $("#find-user-box").hide();
+                $("#widget-foot").hide();
+            }
+        }
+
+    </script>
+}
