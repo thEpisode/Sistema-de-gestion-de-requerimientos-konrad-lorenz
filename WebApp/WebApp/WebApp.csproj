@@ -143,6 +143,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\Form.cs" />
     <Compile Include="Models\Entities\Requirement.cs" />
     <Compile Include="Models\Entities\User.cs" />
     <Compile Include="Models\Enums\Role.cs" />
