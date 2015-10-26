@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "GetForm";
+    ViewBag.Title = "Modificar formulario";
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 }
 
@@ -102,7 +102,14 @@
                         '<tr id="field-' + key + '">' +
                             '<td>' + row[1] + '</td>' +
                             '<td>' + typeField[row[0]].replace('{0}', row[1]).replace('{1}', row[1]) + '</td>' +
-                            '<td><a href="javascript: editField("field-' + key + '")"><i class="fa fa-pencil"></i></a><a href="javascript: deleteField("field-' + key + '")"><i class="fa fa-times"></i></a></td>'
+                            '<td>' +
+                                '<a href="javascript: editField(\'field-' + key + '\')">' +
+                                    '<i class="fa fa-pencil"></i>'+
+                                '</a>'+
+                                '<a href="javascript: deleteField(\'field-' + key + '\')">'+
+                                    '<i class="fa fa-times"></i>' +
+                                '</a>'+
+                            '</td>'
                         '</tr>';
                 });
                 $("#builder>tbody").append(html);
@@ -121,15 +128,42 @@
                     Template += (typeBuilder === 0 ? 'string' : 'text') + '|' + titleBuilder;
                 }
             }
-            debugger;
 
+            updateTemplate();
+        }
+
+        function updateField(key) {
+            var titleBuilder = $("#title-builder").val();
+            var typeBuilder = $("#type-builder").val();
+
+            var items = Template.split(';');
+            if (titleBuilder.length > 0 && typeBuilder !== null) {
+                for (var i = 0; i < items.length; i++) {
+                    if (i == key) {
+                        items[i] = (typeBuilder == 0 ? 'string' : 'text') + '|' + titleBuilder;
+                    }
+                }
+                Template = "";
+                for (var i = 0; i < items.length; i++) {
+                    if (i > 0) {
+                        Template += ';' + items[i];
+                    }
+                    else {
+                        Template += items[i];
+                    }
+                }
+            }
+            
+            updateTemplate();
+        }
+
+        function updateTemplate() {
             $.ajax({
                 url: "@Url.Action("EditTemplate", "Requirement")",
                 type: "POST",
                 data: "Name=" + templateName + "&Template=" + Template,
                 success: function (data) {
-                    console.log(data);
-                    $('#builder>tbody').find('tr').remove();
+                    console.log(data);                    
                     getTemplateByName();
                 },
                 error: function (data) {
@@ -153,14 +187,56 @@
         }
 
         function deleteField(key) {
-
+            //debugger;
+            var template = "";
+            var items = Template.split(';');
+            for (var i = 0; i < items.length; i++) {
+                if (i != parseInt(key.split('field-')[1])) {
+                    if (i == (items.length - 1)) {
+                        template += items[i];
+                    }
+                    else {
+                        template += items[i] + ";";
+                    }
+                }
+            }
+            Template = template;
+            updateTemplate();
         }
 
         function editField(key) {
+            originalHtml = $("#builder>tbody").html();
 
+            var actualFields = $('#builder>tbody tr');
+            
+            // Disable another elements
+            for (var i = 0; i < actualFields.length; i++) {
+                if ($(actualFields[i]).attr("id") != key) {
+                    $('#' + $(actualFields[i]).attr("id")).find('input').prop('disabled', true);
+                    $('#' + $(actualFields[i]).attr("id")).find('textarea').prop('disabled', true);
+                    $('#' + $(actualFields[i]).attr("id")).find('a').remove();
+                }
+            }            
+
+            // Add create field
+            $("#" + key).after(addFieldBuilder());
+
+            // Set name for field
+            $("#title-builder").val(Template.split(';')[key.split('field-')[1]].split('|')[1]);
+            $("#type-builder").val((Template.split(';')[key.split('field-')[1]].split('|')[0] == 'string') ? 0 : 1);
+
+            // Delete item
+            $("#" + key).remove();
+
+            // Change action
+            var id = key.split('field-')[1]
+            $("#creating-field>td:eq(2)>a:eq(0)").attr("href", 'javascript: updateField(\''+id+'\')');
+            
         }
 
+
         function getTemplateByName() {
+            $('#builder>tbody').find('tr').remove();
             $.ajax({
                 url: "@Url.Action("GetTemplateByName", "Requirement")",
                 type: "GET",
