@@ -127,5 +127,13 @@ namespace WebApp.Controllers
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return Json(new { Message = "No existe ningún agente registrado." }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateAgent(User user)
+        {
+            await usersCollection.InsertOneAsync(user.ToBsonDocument());
+            Response.StatusCode = (int)HttpStatusCode.Created;
+            return Json(new { Message = "Usuario registrado." }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
