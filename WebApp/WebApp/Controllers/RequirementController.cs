@@ -148,10 +148,10 @@ namespace WebApp.Controllers
             return Json(new { Message = "No se encuentra la plantilla."}, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> GetAllRequirements()
-        {
+    //    [HttpPost]
+    //    public async Task<ActionResult> GetAllRequirements()
+    //    {
 
-        }
+    //    }
     }
 }
