@@ -147,5 +147,11 @@ namespace WebApp.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "No se encuentra la plantilla."}, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> GetAllRequirements()
+        {
+
+        }
     }
 }
