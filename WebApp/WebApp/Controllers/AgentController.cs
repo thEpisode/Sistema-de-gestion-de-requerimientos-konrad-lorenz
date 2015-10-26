@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace WebApp.Controllers
         }
         
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Me()
         {
             return View();
         }
@@ -65,13 +71,13 @@ namespace WebApp.Controllers
         {
             if (!String.IsNullOrWhiteSpace(username) && !String.IsNullOrWhiteSpace(password))
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("username", username);
+                var filter = Builders<BsonDocument>.Filter.Eq("Username", username);
                 var document = await usersCollection.Find(filter).FirstOrDefaultAsync();
 
                 if (document != null)
                 {
                     User user = BsonSerializer.Deserialize<User>(document);
-                    if (user.password.Equals(password))
+                    if (user.Password.Equals(password))
                     {
                         Response.StatusCode = (int)HttpStatusCode.OK;
                         return Json(user, JsonRequestBehavior.AllowGet);
@@ -84,6 +90,17 @@ namespace WebApp.Controllers
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Por favor indique usuario y contraseña" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> GetProfilePhoto(string fileName)
+        {
+            GridFSBucketOptions bucketOptions = new GridFSBucketOptions() { BucketName = "ProfileImages" };
+            var fs = new GridFSBucket(KonradRequirementsDatabase, bucketOptions);
+
+            var t = fs.DownloadAsBytesByNameAsync(fileName);
+            Task.WaitAll(t);
+            byte[] image = t.Result;
+            return File(image, "image/jpg"); ;
         }
     }
 }
