@@ -238,5 +238,33 @@
             }
         }
 
+        $("#form-builder").on("submit", function (event) {
+            $.ajax({
+                url: "@Url.Action("CreateRequirement", "Requirement")",
+                type: "POST",
+                data: $("#form-builder").serialize(),
+                success: function (data) {                    
+                    console.log(data);
+                    $(".w-form-done").show();
+                    $("#form-builder").hide();
+                },
+                error: function (data) {
+                    sessionStorage.removeItem("user");
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:                            
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        event.preventDefault();
+        });
+
     </script>
 }

@@ -1,8 +1,82 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Requerimientos";
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Requerimientos</h2>
 
+<table class="table table-hover" id="all-requirements">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Ticket</th>
+            <th>Detalle</th>
+            <th>Asignado a</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--Rows-->
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script>
+        (function () {
+            /// Setting up view
+            getAllAgents();
+
+            $('#all-agents').DataTable({
+                "language": {
+                    "url": "/Content/Admin/assets/Spanish.json"
+                }
+            });
+        })();
+
+        function createTable(items) {
+            $('#all-agents').DataTable().destroy();
+
+            $.each(items, function (key, value) {
+                var html =
+                    '<tr>' +
+                        '<td>' + value.Name + '</td>' +
+                        '<td>' + value.Lastname + '</td>' +
+                        '<td>' + value.Username + '</td>' +
+                        '<td>' + (value.Role == 0 ? 'Agente administrador' : 'Agente') + '</td>' +
+                    '</tr>'
+
+                $("#all-agents>tbody").append(html);
+            })
+
+            $('#all-agents').DataTable({
+                "language": {
+                    "url": "/Content/Admin/assets/Spanish.json"
+                }
+            });
+        }
+
+        function getAllAgents() {
+            $.ajax({
+                url: "@Url.Action("GetAll", "Agent")",
+                type: "GET",
+                success: function (data) {
+                    console.log("Agents:")
+                    console.log(data);
+                    createTable(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+    </script>
+}

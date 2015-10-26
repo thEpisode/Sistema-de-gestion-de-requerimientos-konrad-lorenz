@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -96,6 +97,55 @@ namespace WebApp.Controllers
 
             Response.StatusCode = (int)HttpStatusCode.OK;
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateRequirement(FormCollection dataCollection)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("Name", "Default");
+            var document = await formsCollection.Find(filter).FirstOrDefaultAsync();
+
+
+            if (document != null)
+            {
+                Dictionary<string, string> requirementDictionary = new Dictionary<string, string>();
+
+                // Getting template
+                Form form = BsonSerializer.Deserialize<Form>(document);
+                string[] items = form.Template.Split(';');
+
+                // Setting data into template
+                foreach (string item in items)
+                {
+                    string[] field = item.Split('|');
+
+                    string value = dataCollection[field[1]];
+
+                    requirementDictionary.Add(field[1], value);
+                }
+
+                // Generating ticket
+                Random rnd = new Random();
+                StringBuilder ticketBuilder = new StringBuilder();
+                ticketBuilder.AppendFormat("{0}{1}{2}{3}", ((char)rnd.Next(65, 90)).ToString(), ((char)rnd.Next(97, 122)).ToString(), ((char)rnd.Next(97, 122)).ToString(), (rnd.Next(0, 999)).ToString());
+
+                // Creating the requirement
+                Requirement requirement = new Requirement()
+                {
+                    Rate = 0,
+                    Status = Models.Enums.Status.Stack,
+                    Ticket = ticketBuilder.ToString(),
+                    Data = requirementDictionary
+                };
+
+                await requirementsCollection.InsertOneAsync(requirement.ToBsonDocument());
+
+                Response.StatusCode = (int)HttpStatusCode.Created;
+                return Json(new { Message = "Requerimiento creado." }, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "No se encuentra la plantilla."}, JsonRequestBehavior.AllowGet);
         }
     }
 }

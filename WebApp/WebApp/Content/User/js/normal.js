@@ -1736,7 +1736,7 @@ elegance.define('elegance-forms', function ($, _) {
 
   var disconnected = _.debounce(function () {
 
-    window.alert('Oops! This page has a form that is powered by elegance, but important code was removed that is required to make the form work. Please contact support@elegance.com to fix this issue.');
+    //window.alert('Oops! This page has a form that is powered by elegance, but important code was removed that is required to make the form work. Please contact support@elegance.com to fix this issue.');
 
   }, 100);
 

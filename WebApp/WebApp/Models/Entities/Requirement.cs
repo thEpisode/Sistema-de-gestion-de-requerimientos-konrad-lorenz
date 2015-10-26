@@ -16,5 +16,6 @@ namespace WebApp.Models.Entities
         public int Rate { get; set; }
         public Status Status { get; set; }
         public string Ticket { get; set; }
+        public Dictionary<string, string> Data { get; set; }
     }
 }
