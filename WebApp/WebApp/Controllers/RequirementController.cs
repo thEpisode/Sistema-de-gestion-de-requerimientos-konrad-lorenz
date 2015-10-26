@@ -82,5 +82,19 @@ namespace WebApp.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Por favor indique qué plantilla desea modificar" }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> EditTemplate(Form form)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("Name", form.Name);
+
+            var update = Builders<BsonDocument>.Update
+            .Set("Template", form.Template);
+
+            var result = await formsCollection.UpdateOneAsync(filter, update);
+
+            Response.StatusCode = (int)HttpStatusCode.OK;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

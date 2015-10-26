@@ -12,7 +12,7 @@
             <div class="panel-heading">
                 <div class="pull-left" id="form-title">Constructor: </div>
                 <div class="widget-icons pull-right">
-                    <a href="#" ><i style="width:18px;" class="fa fa-plus-circle"></i>Añadir campo</a>
+                    <a href="javascript: addField()" ><i style="width:18px;" class="fa fa-plus-circle"></i>Añadir campo</a>
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -20,9 +20,10 @@
                 <div class="padd">
 
                     <div class="form quick-post">
-                        <table class="table table-hover" id="all-agents">
+                        <table class="table table-hover" id="builder">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -48,11 +49,13 @@
 
 @section Scripts{
     <script>
-        var template = "Default";
+        var templateName = "Default";
         var typeField = {
             string: '<input class="form-control" type="text" id="{0}" name="{1}">',
             text: '<textarea class="form-control" id="{0}" name="{1}"></textarea>'
         };
+        var originalHTML = "";
+        var Template = null;
 
         (function () {
             /// Settings
@@ -60,8 +63,34 @@
             getTemplateByName();
         })();
 
+        function addField() {
+            originalHtml = $("#builder>tbody").html();
+
+            prepareForCreate();
+
+            $("#builder>tbody").append(addFieldBuilder);
+        };
+
+        function prepareForCreate() {
+            // Disable existing elements
+            $('#builder>tbody').find('input').prop('disabled', true);
+            $('#builder>tbody').find('textarea').prop('disabled', true);
+
+            $('#builder>tbody').find('a').remove();
+        }
+
+        function addFieldBuilder() {
+            var html = 
+                '<tr id="creating-field">' +
+                    '<td><input class="form-control" type="text" id="title-builder" placeholder="¿Qué nombre quieres que se vea?" minlength="2" required></td>' +
+                    '<td><select class="form-control" id="type-builder"><option disabled selected>Seleccione un tipo de campo</option><option value="0">String</option><option value="1">Text</option></select></td>' +
+                    '<td><a href="javascript: saveField()"><i class="fa fa-check"></i></a><a href="javascript: cancelField()"><i class="fa fa-times"></i></a></td>'
+                '</tr>';
+            return html;
+        }
+
         function formBuilder(stringBuilder) {
-            $("#form-title").text('Constructor: ' + template);
+            $("#form-title").text('Constructor: ' + templateName);
 
             if (stringBuilder.length > 0) {
                 var items = stringBuilder.split(';');
@@ -70,25 +99,75 @@
                     var row = value.split('|');
 
                     html +=
-                        '<tr>' +
+                        '<tr id="field-' + key + '">' +
                             '<td>' + row[1] + '</td>' +
                             '<td>' + typeField[row[0]].replace('{0}', row[1]).replace('{1}', row[1]) + '</td>' +
-                        '</tr>'
-
-
+                            '<td><a href="javascript: editField("field-' + key + '")"><i class="fa fa-pencil"></i></a><a href="javascript: deleteField("field-' + key + '")"><i class="fa fa-times"></i></a></td>'
+                        '</tr>';
                 });
-                console.log(html)
-                $("#all-agents>tbody").append(html);
+                $("#builder>tbody").append(html);
             }
+        }
+
+        function saveField() {
+            var titleBuilder = $("#title-builder").val();
+            var typeBuilder = $("#type-builder").val();
+
+            if (titleBuilder.length > 0 && typeBuilder !== null) {
+                if (Template.length>0) {
+                    Template += ';' + (typeBuilder === 0 ? 'string' : 'text') + '|' + titleBuilder;
+                }
+                else {
+                    Template += (typeBuilder === 0 ? 'string' : 'text') + '|' + titleBuilder;
+                }
+            }
+            debugger;
+
+            $.ajax({
+                url: "@Url.Action("EditTemplate", "Requirement")",
+                type: "POST",
+                data: "Name=" + templateName + "&Template=" + Template,
+                success: function (data) {
+                    console.log(data);
+                    $('#builder>tbody').find('tr').remove();
+                    getTemplateByName();
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function cancelField() {
+            $("#builder>tbody").html(originalHtml);
+        }
+
+        function deleteField(key) {
+
+        }
+
+        function editField(key) {
+
         }
 
         function getTemplateByName() {
             $.ajax({
                 url: "@Url.Action("GetTemplateByName", "Requirement")",
                 type: "GET",
-                data: "name=" + template,
+                data: "name=" + templateName,
                 success: function (data) {
                     console.log(data);
+                    Template = data.Template;
                     formBuilder(data.Template);
                 },
                 error: function (data) {
