@@ -122,10 +122,10 @@
 
             if (titleBuilder.length > 0 && typeBuilder !== null) {
                 if (Template.length>0) {
-                    Template += ';' + (typeBuilder === 0 ? 'string' : 'text') + '|' + titleBuilder;
+                    Template += ';' + (typeBuilder == 0 ? 'string' : 'text') + '|' + titleBuilder;
                 }
                 else {
-                    Template += (typeBuilder === 0 ? 'string' : 'text') + '|' + titleBuilder;
+                    Template += (typeBuilder == 0 ? 'string' : 'text') + '|' + titleBuilder;
                 }
             }
 
@@ -200,6 +200,11 @@
                     }
                 }
             }
+
+            if (template.lastIndexOf(";") == (template.length - 1)){
+                template = template.substring(0, template.length - 1)
+            }
+
             Template = template;
             updateTemplate();
         }
