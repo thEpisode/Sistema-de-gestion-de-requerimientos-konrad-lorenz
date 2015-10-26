@@ -92,10 +92,22 @@
 
 @section Scripts{
     <script>
+
+        var templateName = "Default";
+        var typeField = {
+            string: '<input class="w-input" type="text" id="{0}" name="{1}" placeholder="{2}">',
+            text: '<textarea class="w-input message" id="{0}" name="{1}" placeholder="{2}"></textarea>'
+        };
+        var originalHTML = "";
+        var Template = null;
+
+
         (function () {
             $("#loading").hide();
             $("#CreateRequirementBox").hide();
             $("#CheckStatusRequirementBox").hide();
+
+            getTemplateByName();
 
             var fakeLoading = setInterval(function () {
 
@@ -175,5 +187,56 @@
                 });
             }
         }
+
+
+        function getTemplateByName() {
+            $('#builder>tbody').find('tr').remove();
+            $.ajax({
+                url: "@Url.Action("GetTemplateByName", "Requirement")",
+                type: "GET",
+                data: "name=" + templateName,
+                success: function (data) {
+                    console.log(data);
+                    Template = data.Template;
+                    formBuilder(data.Template);
+                },
+                error: function (data) {
+                    
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function formBuilder(stringBuilder) {
+            $("#form-title").text('Constructor: ' + templateName);
+
+            if (stringBuilder.length > 0) {
+                var items = stringBuilder.split(';');
+                var html = "";
+                $.each(items, function (key, value) {
+                    var row = value.split('|');
+
+                    html +=
+                        '<article id="field-' + key + '">' +
+                        
+                            
+                            typeField[row[0]].replace('{0}', row[1]).replace('{1}', row[1]).replace('{2}', row[1]) +
+                            
+                        '</article>';
+                });
+                $("#form-builder>section").append(html);
+            }
+        }
+
     </script>
 }
