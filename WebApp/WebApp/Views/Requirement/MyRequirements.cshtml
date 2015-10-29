@@ -4,5 +4,124 @@
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 }
 
-<h2>MyRequirements</h2>
+<h2>Requerimientos asignados a mi</h2>
+
+<p>Aquí están todos mis requerimientos asignados</p>
+
+<table class="table table-hover" id="all-requirements">
+    <thead>
+        <tr>
+            <th>Ticket</th>
+            <th>Estado</th>
+            <th>Calificación</th>
+            <th>Requerimiento</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--Rows-->
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        var statusHTML = "";
+
+        (function () {
+            getAllRequirements();
+        })();
+
+        function getAllRequirements() {
+            $.ajax({
+                url: "@Url.Action("GetMyRequirements", "Requirement")",
+                type: "GET",
+                data: "username=" + User.Username,
+                success: function (data) {
+                    console.log("Requirements:")
+                    console.log(data);
+
+                    createStatus();
+                    createTable(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function createTable(items) {
+            $('#all-requirements').DataTable().destroy();
+
+            $.each(items, function (key, value) {
+                var html =
+                    '<tr id="ticket-' + value.Ticket + '">' +
+                        '<td>' + value.Ticket + '</td>' +
+                        '<td>' + value.Status + '</td>' +
+                        '<td>' + value.Rate + '</td>' +
+                        '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '') + ' | <a href="@Url.Action("Detail")?ticket=' + value.Ticket + '" >Ver detalle</a>' + '</td>' +
+                        '<td>' + statusHTML + '</td>'+
+                    '</tr>';
+
+                $("#all-requirements>tbody").append(html);
+
+                if (value.Status != undefined && value.Status != null) {
+                    $("#ticket-" + value.Ticket + ">td>select").val("status-" + value.Status);
+                }
+            });
+
+            $('#all-requirements').DataTable({
+                "language": {
+                    "url": "/Content/Admin/assets/Spanish.json"
+                }
+            });
+
+        }
+
+        function createStatus(data) {
+            statusHTML = '<select>' +
+                            '<option id="status-0" value="status-0" disabled selected>En cola</option>' +
+                            '<option id="status-1" value="status-1">En progreso</option>' +
+                            '<option id="status-2" value="status-2">Rechazado</option>' +
+                            '<option id="status-3" value="status-3">Finalizado</option>' +
+                         '</select>';
+        }
+
+        $('#all-requirements').delegate('select', 'change', function () {
+            console.log('selected');
+            var status = $(this).val().split('status-')[1];
+            var ticket = $(this).parent().parent().attr("id").split('ticket-')[1];
+            
+            console.log(status);
+            console.log(ticket);
+
+            $.ajax({
+                url: "@Url.Action("ChangeStatus", "Requirement")",
+                type: "POST",
+                data: "ticket=" + ticket + "&status=" + status,
+                success: function (data) {
+                        
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        });
+    </script>
+}
 

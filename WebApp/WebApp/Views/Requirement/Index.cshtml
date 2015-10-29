@@ -6,13 +6,15 @@
 
 <h2>Requerimientos</h2>
 
+<p>Aquí están todos los requerimientos</p>
+
 <table class="table table-hover" id="all-requirements">
     <thead>
         <tr>
             <th>Ticket</th>
             <th>Estado</th>
             <th>Calificación</th>
-            <th>Detalle</th>
+            <th>Requerimiento</th>
             <th>Asignado a</th>
         </tr>
     </thead>
@@ -47,7 +49,7 @@
                         '<td>' + value.Ticket + '</td>' +
                         '<td>' + value.Status + '</td>' +
                         '<td>' + value.Rate + '</td>' +
-                        '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '<a href="" >Ver detalle</a>') + '</td>' +
+                        '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '') + ' | <a href="@Url.Action("Detail")?ticket=' + value.Ticket + '" >Ver detalle</a>' + '</td>' +
                         '<td>' + agentsHTML + '</td>' +
                     '</tr>';
 
@@ -146,7 +148,7 @@
             agentsHTML = '<select><option value="0" disabled selected>Selecciona un agente</option>';
 
             $.each(data, function (key, value) {
-                agentsHTML += '<option onchange="javascript: test(this)" id="agent-' + value.Username + '" value="agent-' + value.Username + '">' + value.Name + " " + value.Lastname + '</option>'
+                agentsHTML += '<option id="agent-' + value.Username + '" value="agent-' + value.Username + '">' + value.Name + " " + value.Lastname + '</option>'
             });
 
             agentsHTML += "</select>";

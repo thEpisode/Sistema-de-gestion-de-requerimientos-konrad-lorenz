@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_AgentLayout.cshtml";
+}
+
+<h2>Detalle</h2>
+
+<table class="table table-hover" id="requirement">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--Rows-->
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        (function () {
+            if (QueryString().ticket != undefined && QueryString().ticket != null) {
+                $("h2").text("Detalle de " + QueryString().ticket);
+
+                getAllAgents(QueryString().ticket);
+            }
+        })();
+
+        function getAllAgents(ticket) {
+            $.ajax({
+                url: "@Url.Action("GetById", "Requirement")",
+                type: "GET",
+                data: "ticket=" + ticket,
+                success: function (data) {
+                    console.log("requirement:")
+                    console.log(data);
+                    
+                    setData(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function setData(data) {
+            console.log(data.Data);
+            var html = "";
+            var i = 0;
+
+            $.each(data.Data, function (key, value) {
+                
+                html +=
+                    '<tr>' +
+                        '<td>' + Object.keys(data.Data)[i] + '</td>' +
+                        '<td>' + value + '</td>' +
+                    '</tr>';
+                i++;
+            });
+
+            $("#requirement>tbody").append(html);
+        }
+    </script>
+}
+

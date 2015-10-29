@@ -46,13 +46,7 @@ namespace WebApp.Controllers
         {
             return View();
         }
-
-        [HttpGet]
-        public ActionResult GetMyRequirements(string username)
-        {
-            return View();
-        }
-
+        
         public ActionResult GetForm()
         {
             return View();
@@ -60,6 +54,12 @@ namespace WebApp.Controllers
 
         [HttpPost]
         public ActionResult ModifyForm()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Detail(string ticket)
         {
             return View();
         }
@@ -205,6 +205,73 @@ namespace WebApp.Controllers
                 return Json(new { Message = "Ok" }, JsonRequestBehavior.AllowGet);
 
                 
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Por favor indique qué usuario quiere modificar" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetById(string ticket)
+        {
+            if (!String.IsNullOrWhiteSpace(ticket))
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq("Ticket", ticket);
+                var document = await requirementsCollection.Find(filter).FirstOrDefaultAsync();
+
+                if (document != null)
+                {
+                    Requirement requirement = BsonSerializer.Deserialize<Requirement>(document);
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                    return Json(requirement, JsonRequestBehavior.AllowGet);
+
+                }
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { Message = "No se encuentra el requerimiento." }, JsonRequestBehavior.AllowGet);
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Por favor indique qué requerimiento necesita." }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetMyRequirements(string username)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("AgentUsername", username);
+
+            var documents = await requirementsCollection.Find(filter).ToListAsync();
+
+            List<Requirement> requirements = new List<Requirement>();
+
+            if (documents.Count > 0)
+            {
+                foreach (var item in documents)
+                {
+                    Requirement requirement = BsonSerializer.Deserialize<Requirement>(item);
+                    requirements.Add(requirement);
+                }
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(requirements, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Json(new { Message = "No existe ningún requerimiento registrado." }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeStatus(string ticket, int status)
+        {
+            if (!String.IsNullOrWhiteSpace(ticket))
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq("Ticket", ticket);
+
+                var update = Builders<BsonDocument>.Update
+                        .Set("Status", status);
+
+                var result = await requirementsCollection.UpdateOneAsync(filter, update);
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(new { Message = "Ok" }, JsonRequestBehavior.AllowGet);
+
+
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Por favor indique qué usuario quiere modificar" }, JsonRequestBehavior.AllowGet);
