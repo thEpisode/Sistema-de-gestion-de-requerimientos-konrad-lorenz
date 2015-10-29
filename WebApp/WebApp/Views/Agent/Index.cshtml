@@ -3,37 +3,85 @@
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 
 }
+
+<p>Bienvenido, aquí podrás distintas tareas y entre las más comunes puedes acceder a las siguientes haciendo click encima de cada una.</p>
+
 <div class="row">
-    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <div class="info-box blue-bg">
-            <i class="icon_pens"></i>
-            <div class="count">6.674</div>
-            <div class="title">son tus requerimientos</div>
-        </div><!--/.info-box-->
-    </div><!--/.col-->
+    <a href="@Url.Action("MyRequirements","Requirement")">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <div class="info-box blue-bg">
+                <i class="icon_pens"></i>
+                <div id="myRequirements-count" class="count">0</div>
+                <div class="title">son tus requerimientos</div>
+            </div>
+        </div>
+    </a>
 
-    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <div class="info-box brown-bg">
-            <i class="icon_document_alt"></i>
-            <div class="count">Modificar</div>
-            <div class="title">Formulario</div>
-        </div><!--/.info-box-->
-    </div><!--/.col-->
+    <a href="@Url.Action("GetForm","Requirement")">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <div class="info-box brown-bg">
+                <i class="icon_document_alt"></i>
+                <div class="count">Modificar</div>
+                <div class="title">Formulario</div>
+            </div>
+        </div>
+    </a>
 
-    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <div class="info-box dark-bg">
-            <i class="icon_group"></i>
-            <div class="count">4.362</div>
-            <div class="title">Agentes</div>
-        </div><!--/.info-box-->
-    </div><!--/.col-->
+    <a href="@Url.Action("All","Agent")">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <div class="info-box dark-bg">
+                <i class="icon_group"></i>
+                <div id="agents-count" class="count">0</div>
+                <div class="title">Agentes</div>
+            </div>
+        </div>
+    </a>
 
-    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <div class="info-box green-bg">
-            <i class="icon_lightbulb"></i>
-            <div class="count">Modificar</div>
-            <div class="title">Colores</div>
-        </div><!--/.info-box-->
-    </div><!--/.col-->
-
+    <a href="@Url.Action("Index","UI")">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <div class="info-box green-bg">
+                <i class="icon_lightbulb"></i>
+                <div class="count">Modificar</div>
+                <div class="title">Colores</div>
+            </div>
+        </div>
+    </a>
 </div>
+
+@section Scripts{
+    <script>
+        (function () {
+            getAgentsCount();
+
+            getRequirementsCount();
+        })();
+
+        function getAgentsCount() {
+            $.ajax({
+                url: "@Url.Action("GetAgentsCount", "Agent")",
+                type: "GET",
+                success: function (data) {
+                    
+                    $("#agents-count").text(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function getRequirementsCount() {
+            $.ajax({
+                url: "@Url.Action("GetRequirementsCount", "Requirement")",
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                    $("#myRequirements-count").text(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+}

@@ -17,5 +17,6 @@ namespace WebApp.Models.Entities
         public Status Status { get; set; }
         public string Ticket { get; set; }
         public Dictionary<string, string> Data { get; set; }
+        public string AgentUsername { get; set; }
     }
 }

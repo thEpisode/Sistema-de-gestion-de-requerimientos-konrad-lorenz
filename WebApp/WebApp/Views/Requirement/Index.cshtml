@@ -9,8 +9,9 @@
 <table class="table table-hover" id="all-requirements">
     <thead>
         <tr>
-            <th>Status</th>
             <th>Ticket</th>
+            <th>Estado</th>
+            <th>Calificación</th>
             <th>Detalle</th>
             <th>Asignado a</th>
         </tr>
@@ -23,6 +24,9 @@
 
 @section Scripts{
     <script>
+        var agents = null;
+        var agentsHTML = "";
+
         (function () {
             /// Setting up view
             getAllAgents();
@@ -35,26 +39,58 @@
         })();
 
         function createTable(items) {
-            $('#all-agents').DataTable().destroy();
+            $('#all-requirements').DataTable().destroy();
 
             $.each(items, function (key, value) {
                 var html =
-                    '<tr>' +
-                        '<td>' + value.Name + '</td>' +
-                        '<td>' + value.Lastname + '</td>' +
-                        '<td>' + value.Username + '</td>' +
-                        '<td>' + (value.Role == 0 ? 'Agente administrador' : 'Agente') + '</td>' +
-                    '</tr>'
+                    '<tr id="ticket-' + value.Ticket + '">' +
+                        '<td>' + value.Ticket + '</td>' +
+                        '<td>' + value.Status + '</td>' +
+                        '<td>' + value.Rate + '</td>' +
+                        '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '<a href="" >Ver detalle</a>') + '</td>' +
+                        '<td>' + agentsHTML + '</td>' +
+                    '</tr>';
 
-                $("#all-agents>tbody").append(html);
-            })
+                $("#all-requirements>tbody").append(html);
 
-            $('#all-agents').DataTable({
+                if (value.AgentUsername != undefined && value.AgentUsername != null) {
+                    $("#ticket-" + value.Ticket + ">td>select").val("agent-" + value.AgentUsername);
+                }                
+            });
+            
+            $('#all-requirements').DataTable({
                 "language": {
                     "url": "/Content/Admin/assets/Spanish.json"
                 }
             });
+
         }
+
+        $('#all-requirements').delegate('select', 'change', function () {
+            
+            var agentUsername = $(this).val().split('agent-')[1];
+            var ticket = $(this).parent().parent().attr("id").split('ticket-')[1];
+            
+            $.ajax({
+                url: "@Url.Action("AssignAgent", "Requirement")",
+                type: "POST",
+                data: "ticket=" + ticket + "&agentUsername=" + agentUsername,
+                success: function (data) {
+                        
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        });
 
         function getAllAgents() {
             $.ajax({
@@ -63,6 +99,33 @@
                 success: function (data) {
                     console.log("Agents:")
                     console.log(data);
+
+                    createAgents(data);
+                    getAllRequirements();
+
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function getAllRequirements() {
+            $.ajax({
+                url: "@Url.Action("GetAllRequirements", "Requirement")",
+                type: "GET",
+                success: function (data) {
+                    console.log("Requirements:")
+                    console.log(data);
+
                     createTable(data);
                 },
                 error: function (data) {
@@ -77,6 +140,16 @@
                     }
                 }
             });
+        }
+
+        function createAgents(data) {
+            agentsHTML = '<select><option value="0" disabled selected>Selecciona un agente</option>';
+
+            $.each(data, function (key, value) {
+                agentsHTML += '<option onchange="javascript: test(this)" id="agent-' + value.Username + '" value="agent-' + value.Username + '">' + value.Name + " " + value.Lastname + '</option>'
+            });
+
+            agentsHTML += "</select>";
         }
     </script>
 }

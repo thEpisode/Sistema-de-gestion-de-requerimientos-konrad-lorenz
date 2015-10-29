@@ -176,5 +176,24 @@ namespace WebApp.Controllers
 
             
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAgentsCount()
+        {
+            var agentRole = Builders<BsonDocument>.Filter.Eq("Role", 1);
+            var managingRole = Builders<BsonDocument>.Filter.Eq("Role", 0);
+            var joinFilter = Builders<BsonDocument>.Filter.Or(agentRole, managingRole);
+            
+            var documents = await usersCollection.Find(joinFilter).ToListAsync();
+
+            if (documents.Count > 0)
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(documents.Count, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.OK;
+            return Json(0, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -148,10 +148,66 @@ namespace WebApp.Controllers
             return Json(new { Message = "No se encuentra la plantilla."}, JsonRequestBehavior.AllowGet);
         }
 
-    //    [HttpPost]
-    //    public async Task<ActionResult> GetAllRequirements()
-    //    {
+        [HttpGet]
+        public async Task<ActionResult> GetAllRequirements()
+        {
+            var filter = new BsonDocument();
 
-    //    }
+            var documents = await requirementsCollection.Find(filter).ToListAsync();
+
+            List<Requirement> requirements = new List<Requirement>();
+
+            if (documents.Count > 0)
+            {
+                foreach (var item in documents)
+                {
+                    Requirement requirement = BsonSerializer.Deserialize<Requirement>(item);
+                    requirements.Add(requirement);
+                }
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(requirements, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Json(new { Message = "No existe ningún requerimiento registrado." }, JsonRequestBehavior.AllowGet);
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult> GetRequirementsCount()
+        {
+            var filter = new BsonDocument();
+            
+            var documents = await requirementsCollection.Find(filter).ToListAsync();
+
+            if (documents.Count > 0)
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(documents.Count, JsonRequestBehavior.AllowGet);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.OK;
+            return Json(0, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AssignAgent(string ticket, string agentUsername)
+        {
+            if (!String.IsNullOrWhiteSpace(ticket))
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq("Ticket", ticket);
+
+                var update = Builders<BsonDocument>.Update
+                        .Set("AgentUsername", agentUsername);
+
+                var result = await requirementsCollection.UpdateOneAsync(filter, update);
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(new { Message = "Ok" }, JsonRequestBehavior.AllowGet);
+
+                
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Por favor indique qué usuario quiere modificar" }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
