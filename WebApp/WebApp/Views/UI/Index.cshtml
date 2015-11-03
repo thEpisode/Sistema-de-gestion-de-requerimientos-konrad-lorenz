@@ -4,5 +4,196 @@
     Layout = "~/Views/Shared/_AgentLayout.cshtml";
 }
 
-<h2>Index</h2>
+<style>
+    .color-chooser{
+        
+    }
+    .color-chooser>li{
+        max-width: 77px;
+        min-width: 77px;
+        min-height: 77px;
+        max-height: 77px;
+        margin: 10px 10px;
+        padding-top:5px;
+        display:inline-table;
+        cursor:pointer;
+        text-align:center;
+    }
+</style>
+
+<h2>Modificar colores</h2>
+
+<p>Selecciona el color pasando el cursor por encima de cada cuadro y has click cuando estés seguro:</p>
+
+<h3>Cabecera:</h3>
+<ul class="color-chooser" id="heading-chooser">
+    <li class="dark-heading-bg">Dark heading</li>
+    <li class="main-bg">Main</li>
+    <li class="white-bg">White</li>
+    <li class="red-bg">Red</li>
+    <li class="blue-bg">Blue</li>
+    <li class="green-bg">Green</li>
+    <li class="greenLight-bg">Green Light</li>
+    <li class="yellow-bg">Yellow</li>
+    <li class="orange-bg">Orange</li>
+    <li class="purple-bg">Purple</li>
+    <li class="pink-bg">Pink</li>
+    <li class="lime-bg">Lime</li>
+    <li class="magenta-bg">Magenta</li>
+    <li class="teal-bg">Teal</li>
+    <li class="brown-bg">Brown</li>
+    <li class="gray-bg">Gray</li>
+    <li class="dark-bg">Dark</li>
+    <li class="facebook-bg">Facebook</li>
+    <li class="twitter-bg">Twitter</li>
+    <li class="linkedin-bg">Linkedin</li>
+</ul>
+
+<h3>Barra lateral:</h3>
+<ul class="color-chooser" id="sidebar-chooser">
+    <li class="dark-heading-bg">Dark heading</li>
+    <li class="main-bg">Main</li>
+    <li class="white-bg">White</li>
+    <li class="red-bg">Red</li>
+    <li class="blue-bg">Blue</li>
+    <li class="green-bg">Green</li>
+    <li class="greenLight-bg">Green Light</li>
+    <li class="yellow-bg">Yellow</li>
+    <li class="orange-bg">Orange</li>
+    <li class="purple-bg">Purple</li>
+    <li class="pink-bg">Pink</li>
+    <li class="lime-bg">Lime</li>
+    <li class="magenta-bg">Magenta</li>
+    <li class="teal-bg">Teal</li>
+    <li class="brown-bg">Brown</li>
+    <li class="gray-bg">Gray</li>
+    <li class="dark-bg">Dark</li>
+    <li class="facebook-bg">Facebook</li>
+    <li class="twitter-bg">Twitter</li>
+    <li class="linkedin-bg">Linkedin</li>
+</ul>
+
+@section Scripts{
+    <script>
+        (function () {
+           
+            $('#heading-chooser>li').hover(function () {
+                var className = $(this).attr('class');
+
+                $('header').removeClass();
+                $('header').addClass('header');
+                $('header').addClass(className);
+            }, function () {
+                if (Theme != undefined && Theme != null) {
+                    $('header').removeClass();
+                    $('header').addClass('header');
+                    $('header').addClass(Theme.HeaderColor);
+                }
+            });
+
+            $('#sidebar-chooser>li').hover(function () {
+                var className = $(this).attr('class');
+
+                $('#sidebar').removeClass();
+                $('#sidebar').addClass(className);
+            }, function () {
+                if (Theme != undefined && Theme != null) {
+                    $('#sidebar').removeClass();
+                    $('#sidebar').addClass(Theme.SidebarColor);
+                }
+            });
+
+            $('#heading-chooser>li').click(function () {
+                var className = $(this).attr('class');
+
+                $.ajax({
+                    url: "@Url.Action("ModifyHeaderColor", "UI")",
+                    type: "POST",
+                    data: "cssClass=" + className,
+                    success: function (data) {
+                        if (Theme != undefined && Theme != null) {
+                            var newTheme = {};
+
+                            newTheme.SidebarColor = Theme.SidebarColor;
+                            newTheme.HeaderColor = data;
+
+                            // From _AgentLayout
+                            setTheme(newTheme);
+                        }
+                        
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        switch (data.status) {
+                            case 403:
+                            case 400:
+                            case 404:
+                                alert(JSON.parse(data.responseText).Message);
+                                break;
+                            default:
+                                alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                                break;
+                        }
+                    }
+                });
+            });
+
+            $('#sidebar-chooser>li').click(function () {
+                var className = $(this).attr('class');
+
+                $.ajax({
+                    url: "@Url.Action("ModifySidebarColor", "UI")",
+                    type: "POST",
+                    data: "cssClass=" + className,
+                    success: function (data) {
+                        if (Theme != undefined && Theme != null) {
+                            var newTheme = {};
+
+                            newTheme.SidebarColor = data;
+                            newTheme.HeaderColor = Theme.SidebarColor;
+
+                            // From _AgentLayout
+                            setTheme(newTheme);
+                        }
+
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        switch (data.status) {
+                            case 403:
+                            case 400:
+                            case 404:
+                                alert(JSON.parse(data.responseText).Message);
+                                break;
+                            default:
+                                alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                                break;
+                        }
+                    }
+                });
+            });
+
+        })();
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

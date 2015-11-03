@@ -14,5 +14,7 @@ namespace WebApp.Models.Entities
         ObjectId _id { get; set; }
         public string Name { get; set; }
         public string Template { get; set; }
+        public string HeaderColor { get; set; }
+        public string SidebarColor { get; set; }
     }
 }

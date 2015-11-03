@@ -261,7 +261,6 @@ table tr th { color: #688a7e;}
     width: 180px;
     height: 100%;
     position: fixed;
-    background: #394a59;
 }
 
 .nav-collapse.collapse {
@@ -967,6 +966,7 @@ div[data-role="editor-toolbar"] {
   border: 1px solid #4c4f53;
 }
 .main-bg {
+    color: #1a2732;
   background: #e6e8ea;
 }
 .white-bg {
@@ -990,7 +990,7 @@ div[data-role="editor-toolbar"] {
   background-color : #26c281;
 }
 .greenLight-bg {
-  color: #71843f;
+  color: #fff;
   background: #71843f;
   background-color: #71843f;
 }

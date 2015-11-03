@@ -83,7 +83,7 @@
         <!--header end-->
         <!--sidebar start-->
         <aside>
-            <div id="sidebar" class="nav-collapse ">
+            <div id="sidebar" class="nav-collapse dark-bg">
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu">
                     <li class="">
@@ -169,9 +169,14 @@
 
     <script>
         var User = null;
+        var Theme = null;
+
         (function () {
             /// Check if exist user in session storage
             if (sessionStorage.getItem("user") !== null) {
+                // Getting theme
+                getTheme();
+
                 User = JSON.parse(sessionStorage.user);
 
                 /// Settings
@@ -201,6 +206,42 @@
 
         function getProfileImage(fileName) {
             $("#avatar-preload").attr("src", "@Url.Action("GetProfilePhoto", "Agent")" + "?fileName=" + fileName)
+        }
+
+        function getTheme() {
+            $.ajax({
+                url: "@Url.Action("GetTheme", "UI")",
+                type: "GET",
+                success: function (data) {
+                    console.log("requirement:")
+                    console.log(data);
+                    
+                    setTheme(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
+        function setTheme(theme) {
+            Theme = theme;
+
+            // Set header theme
+            $('header').removeClass();
+            $('header').addClass('header');
+            $('header').addClass(theme.HeaderColor);
+
+            $('#sidebar').removeClass();
+            $('#sidebar').addClass(theme.SidebarColor);
         }
 
         /// Used for get values from Query String
