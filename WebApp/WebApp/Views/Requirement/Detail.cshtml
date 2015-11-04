@@ -60,9 +60,28 @@
 
             $.each(data.Data, function (key, value) {
                 
+                if (i == 0) {
+                    var status = "En cola";
+                    switch (data.Status) {
+                        case 0:
+                            status = "En cola";
+                            break;
+                        case 1:
+                            status = "En progreso";
+                            break;
+                        case 2:
+                            status = "Rechazado";
+                            break;
+                        case 3:
+                            status = "Finalizado";
+                            break;
+                    }
+                    html += '<tr><td> Agente que lo atiende:</td><td>' + data.AgentUsername + '</td></tr>'+
+                            '<tr><td> Estado:</td><td>' + status + '</td></tr>';
+                }
                 html +=
                     '<tr>' +
-                        '<td>' + Object.keys(data.Data)[i] + '</td>' +
+                        '<td>' + Object.keys(data.Data)[i] + ':</td>' +
                         '<td>' + value + '</td>' +
                     '</tr>';
                 i++;

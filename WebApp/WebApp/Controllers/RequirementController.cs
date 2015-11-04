@@ -141,7 +141,7 @@ namespace WebApp.Controllers
                 await requirementsCollection.InsertOneAsync(requirement.ToBsonDocument());
 
                 Response.StatusCode = (int)HttpStatusCode.Created;
-                return Json(new { Message = "Requerimiento creado." }, JsonRequestBehavior.AllowGet);
+                return Json(ticketBuilder.ToString(), JsonRequestBehavior.AllowGet);
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;

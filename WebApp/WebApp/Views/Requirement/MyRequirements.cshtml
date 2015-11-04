@@ -61,10 +61,26 @@
             $('#all-requirements').DataTable().destroy();
 
             $.each(items, function (key, value) {
+                var status = "En cola";
+                switch (value.Status) {
+                    case 0:
+                        status = "En cola";
+                        break;
+                    case 1:
+                        status = "En progreso";
+                        break;
+                    case 2:
+                        status = "Rechazado";
+                        break;
+                    case 3:
+                        status = "Finalizado";
+                        break;
+                }
+
                 var html =
                     '<tr id="ticket-' + value.Ticket + '">' +
                         '<td>' + value.Ticket + '</td>' +
-                        '<td>' + value.Status + '</td>' +
+                        '<td>' + status + '</td>' +
                         '<td>' + value.Rate + '</td>' +
                         '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '') + ' | <a href="@Url.Action("Detail")?ticket=' + value.Ticket + '" >Ver detalle</a>' + '</td>' +
                         '<td>' + statusHTML + '</td>'+
