@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "MyProfile";
+    Layout = "~/Views/Shared/_AgentLayout.cshtml";
+}
+
+<style>
+    .profile-box{
+        margin:2% 2%;
+    }
+    .profile-header{
+        display:inline-flex;
+    }
+    .profile-header .profile-text{
+        margin-left:10px;
+    }
+    .profile-text h2{
+        margin-top: 13%;
+        text-transform:capitalize
+    }
+    .profile-photo-form{
+        display:inline-flex;
+        margin-left:3px;
+    }
+    .profile-photo-form label{
+        font-weight:900;
+        font-size:15px;
+    }
+    .information-box{
+        margin-top:20px;
+    }
+</style>
+
+<section class="profile-box">
+    <section class="row col-xs-12">
+        <section class="profile-header col-xs-6 col-md-offset-3">
+            <span class="profile-ava col-md-offset-2" id="user-ava">
+                <img alt="" width="100" id="user" src="~/Content/Admin/img/avatar1_small.jpg">
+                <img alt="" width="100" style="display:none;" id="user-preload" />
+            </span>
+            <section class="profile-text">
+                <h2></h2>
+            </section>
+        </section>
+    </section>
+    <section class="row col-xs-12 information-box">
+        <section class="col-xs-6 col-md-offset-3">
+            <section class="panel">
+                <section class="panel-heading">
+                    Información básica
+                </section>
+                <div class="panel-body">
+                    <form id="edit-user-form" class="form-horizontal">
+                        <article class="form-group username-field">
+                            <label class="col-xs-2 control-label" for="Username">Usuario</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="Username" name="Username" disabled />
+                            </div>
+                        </article>
+                        <article class="form-group role-field" style="display:none;">
+                            <label class="col-xs-2 control-label" for="Role">Rol</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="Role" name="Role" disabled />
+                            </div>
+                        </article>
+                        <article class="form-group name-field">
+                            <label class="col-xs-2 control-label" for="Name">Nombre</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="Name" name="Name" />
+                            </div>
+                        </article>
+                        <article class="form-group lastname-field">
+                            <label class="col-xs-2 control-label" for="Lastname">Apellido</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="Lastname" name="Lastname" />
+                            </div>
+                        </article>
+                        <article class="form-group password-field">
+                            <label class="col-xs-2 control-label" for="Password">Contraseña</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="Password" name="Password" />
+                            </div>
+                        </article>
+                        <article class="form-group send-field">
+                            <div class="col-xs-5 col-sm-offset-3">
+                                <button type="submit" id="save-button" class="col-xs-12 btn btn-primary">Guardar</button>
+                            </div>
+                        </article>
+                    </form>
+                </div>
+            </section>
+        </section>
+        
+    </section>
+    
+</section>
+
+
+
+
+@section Scripts{
+    <script>
+        (function () {
+
+            /// Settings
+            // Get Profile image
+            getProfileImage(User.ProfileImageName);
+
+            // Change text
+            $("h2").text(User.Name + " " + User.Lastname);
+            setData();
+        })();
+
+        /// Change the default avatar to stored photo
+        $('#user-preload').on('load', function () {
+            var img = $("#user-preload").clone();
+            $("#user-ava").append(img);
+            $("#user").remove();
+            $("#user-preload:eq(0)").attr("id", "user");
+            $("#user").show();
+        });
+
+        $("#edit-user-form").on('submit', function (event) {
+
+            $("#Username").attr("disabled", false)
+            $("#Role").attr("disabled", false)
+
+            $.ajax({
+                url: "@Url.Action("EditAgent", "Agent")",
+                type: "POST",
+                data: $("#edit-user-form").serialize(),
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+
+            $("#Username").attr("disabled", true)
+            $("#Role").attr("disabled", true)
+
+            event.preventDefault();
+        });
+
+        function getProfileImage(fileName) {
+            $("#user-preload").attr("src", "@Url.Action("GetProfilePhoto", "Agent")" + "?fileName=" + fileName)
+        }
+
+        function setData() {
+            $("#Username").val(User.Username);
+            $("#Role").val(User.Role);
+            $("#Name").val(User.Name);
+            $("#Lastname").val(User.Lastname);
+            $("#Password").val(User.Password);
+        }
+    </script>
+}

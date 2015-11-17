@@ -94,13 +94,27 @@ namespace WebApp.Controllers
 
         public async Task<ActionResult> GetProfilePhoto(string fileName)
         {
+            FileContentResult photo = null;
+            try
+            {
+                photo = await GetProfileService(fileName);
+            }
+            catch (Exception)
+            {
+                photo = await GetProfileService(fileName);
+            }
+            return photo;
+        }
+
+        private async Task<FileContentResult> GetProfileService(string fileName)
+        {
             GridFSBucketOptions bucketOptions = new GridFSBucketOptions() { BucketName = "ProfileImages" };
             var fs = new GridFSBucket(KonradRequirementsDatabase, bucketOptions);
 
             var t = fs.DownloadAsBytesByNameAsync(fileName);
             Task.WaitAll(t);
             byte[] image = t.Result;
-            return File(image, "image/jpg"); ;
+            return File(image, "image/jpg");
         }
 
         public async Task<ActionResult> GetAll()

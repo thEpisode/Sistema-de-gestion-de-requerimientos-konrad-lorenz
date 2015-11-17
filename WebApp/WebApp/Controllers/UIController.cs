@@ -70,18 +70,35 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<ActionResult> GetTheme()
         {
+            Form form = null;
+            try
+            {
+                form = await GetThemeService();
+            }
+            catch (Exception)
+            {
+                form = await GetThemeService();
+            }
+            if (form != null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(new { HeaderColor = form.HeaderColor, SidebarColor = form.SidebarColor }, JsonRequestBehavior.AllowGet);
+            }
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Json(new { Message = "No se encuentra el tema." }, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<Form> GetThemeService()
+        {
             var filter = Builders<BsonDocument>.Filter.Eq("Name", "Default");
             var document = await formsCollection.Find(filter).FirstOrDefaultAsync();
 
             if (document != null)
             {
                 Form form = BsonSerializer.Deserialize<Form>(document);
-                Response.StatusCode = (int)HttpStatusCode.OK;
-                return Json(new { HeaderColor = form.HeaderColor, SidebarColor = form.SidebarColor }, JsonRequestBehavior.AllowGet);
-
+                return form;
             }
-            Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return Json(new { Message = "No se encuentra el tema." }, JsonRequestBehavior.AllowGet);
+            return null;
         }
     }
 }
