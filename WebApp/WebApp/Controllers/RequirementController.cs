@@ -160,19 +160,31 @@ namespace WebApp.Controllers
         {
             var filter = new BsonDocument();
 
-            var documents = await requirementsCollection.Find(filter).ToListAsync();
+            List<BsonDocument> documents = null;
+
+            try
+            {
+                documents = await requirementsCollection.Find(filter).ToListAsync();
+            }
+            catch (Exception)
+            {
+                documents = await requirementsCollection.Find(filter).ToListAsync();
+            }
 
             List<Requirement> requirements = new List<Requirement>();
 
-            if (documents.Count > 0)
+            if (documents != null)
             {
-                foreach (var item in documents)
+                if (documents.Count > 0)
                 {
-                    Requirement requirement = BsonSerializer.Deserialize<Requirement>(item);
-                    requirements.Add(requirement);
+                    foreach (var item in documents)
+                    {
+                        Requirement requirement = BsonSerializer.Deserialize<Requirement>(item);
+                        requirements.Add(requirement);
+                    }
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                    return Json(requirements, JsonRequestBehavior.AllowGet);
                 }
-                Response.StatusCode = (int)HttpStatusCode.OK;
-                return Json(requirements, JsonRequestBehavior.AllowGet);
             }
 
             Response.StatusCode = (int)HttpStatusCode.NotFound;

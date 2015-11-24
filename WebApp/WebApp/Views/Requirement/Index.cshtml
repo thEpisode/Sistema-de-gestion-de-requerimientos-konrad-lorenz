@@ -65,7 +65,7 @@
                         '<td>' + value.Ticket + '</td>' +
                         '<td>' + status + '</td>' +
                         '<td>' + value.Rate + '</td>' +
-                        '<td>' + (value.Data.Title != undefined && value.Data.Title != null ? value.Data.Title : '') + ' | <a href="@Url.Action("Detail")?ticket=' + value.Ticket + '" >Ver detalle</a>' + '</td>' +
+                        '<td>' + (value.Data.Titulo != undefined && value.Data.Titulo != null ? value.Data.Titulo : 'El requerimiento no tiene un campo llamado "Titulo"') + ' | <a href="@Url.Action("Detail")?ticket=' + value.Ticket + '" >Ver detalle</a>' + '</td>' +
                         '<td>' + agentsHTML + '</td>' +
                     '</tr>';
 
