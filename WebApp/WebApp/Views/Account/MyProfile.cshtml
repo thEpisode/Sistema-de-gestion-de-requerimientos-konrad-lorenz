@@ -29,12 +29,56 @@
     .information-box{
         margin-top:20px;
     }
+
+    #box{  
+        width:118px;
+        height:114px;
+        box-shadow:inset 1px 1px 40px 0 rgba(0,0,0,.45);
+        border-bottom:2px solid #fff;
+        border-right:2px solid #fff;
+        margin:5% auto 0 auto; 
+        background:url(http://ianfarb.com/wp-content/uploads/2013/10/nicholas-hodag.jpg);
+        background-size:cover;
+        border-radius:50%;
+        overflow:hidden;
+        cursor:pointer;
+    }
+
+    #overlay{  
+        background:rgba(0,0,0,.75);
+        text-align:center;
+        padding:18px 0 66px 0;
+        opacity:0;
+        border-radius:50%;
+        height:112px;
+        -webkit-transition: opacity .25s ease;
+        -moz-transition: opacity .25s ease;
+    }
+
+    #box:hover #overlay {
+        opacity:1;
+    }
+
+    #plus{  
+        font-family:Helvetica;
+        font-weight:900;
+        color:rgba(255,255,255,.85);
+        font-size:54px;
+    }
+
 </style>
 
 <section class="profile-box">
     <section class="row col-xs-12">
         <section class="profile-header col-xs-6 col-md-offset-3">
             <span class="profile-ava col-md-offset-2" id="user-ava">
+                <div id="box" style="display:none;">
+
+                    <div id="overlay">
+                        <span id="plus">+</span>
+                    </div>
+
+                </div>
                 <img alt="" width="100" id="user" src="~/Content/Admin/img/avatar1_small.jpg">
                 <img alt="" width="100" style="display:none;" id="user-preload" />
             </span>
@@ -95,7 +139,12 @@
     
 </section>
 
-
+<section style="display:none;">
+    <form action="@Url.Action("EditPhoto")" method="post" enctype="multipart/form-data">
+        <input type="file" id="profilePhotoUser" name="profilePhotoUser"/>
+        <input type="text" id="usernamePhoto" name="usernamePhoto"/>
+    </form>
+</section>
 
 
 @section Scripts{
@@ -103,6 +152,10 @@
         (function () {
 
             /// Settings
+
+            // Validate if is necessary re-login
+            reLogin();
+
             // Get Profile image
             getProfileImage(User.ProfileImageName);
 
@@ -113,11 +166,17 @@
 
         /// Change the default avatar to stored photo
         $('#user-preload').on('load', function () {
+            $("#box").show();
+            $('#user-preload').hide();
             var img = $("#user-preload").clone();
             $("#user-ava").append(img);
             $("#user").remove();
             $("#user-preload:eq(0)").attr("id", "user");
-            $("#user").show();
+
+            $("#box").css("background", "url(" + $("#user").attr("src") + ")");
+            $("#box").css("background-size", "cover");
+
+            //$("#user").show();
         });
 
         $("#edit-user-form").on('submit', function (event) {
@@ -129,8 +188,8 @@
                 url: "@Url.Action("EditAgent", "Agent")",
                 type: "POST",
                 data: $("#edit-user-form").serialize(),
-                success: function (data) {
-                    location.reload();
+                success: function (data) {                    
+                    reLoginProcess();
                 },
                 error: function (data) {
                     console.log(data);
@@ -157,12 +216,31 @@
             $("#user-preload").attr("src", "@Url.Action("GetProfilePhoto", "Agent")" + "?fileName=" + fileName)
         }
 
+        function reLogin() {
+            debugger;
+            var query = QueryString();
+            if (query.ReLogin != undefined && query.ReLogin.length > 0) {
+                if (query.ReLogin.toLowerCase() == "true") {
+                    reLoginProcess();
+                }
+            }
+        }
+
         function setData() {
             $("#Username").val(User.Username);
             $("#Role").val(User.Role);
             $("#Name").val(User.Name);
             $("#Lastname").val(User.Lastname);
             $("#Password").val(User.Password);
+            $("#usernamePhoto").val(User.Username);
         }
+
+        $("#box").click(function () {
+            $("#profilePhotoUser").trigger("click");
+        });
+
+        $("#profilePhotoUser").change(function () {
+            $("#profilePhotoUser").parent().submit();
+        })
     </script>
 }

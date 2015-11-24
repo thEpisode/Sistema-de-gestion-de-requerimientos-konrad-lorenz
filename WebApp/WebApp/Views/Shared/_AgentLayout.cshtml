@@ -201,7 +201,7 @@
                     $(".sidebar-menu>li:eq(3)").hide();
                     $(".sidebar-menu>li:eq(4)").hide();
                 }
-                
+
             }
         }
 
@@ -219,6 +219,40 @@
             window.location.assign('@Url.Action("Index", "Home")');
         }
 
+        function reLoginProcess() {
+            var usernameL = User.Username;
+            var passwordL = User.Password;
+            var data = { "username": usernameL, "password": passwordL };
+            
+            debugger;
+            $.ajax({
+                url: "@Url.Action("Authenticate", "Agent")",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    sessionStorage.removeItem("user");
+                    console.log(data);
+                    sessionStorage.user = JSON.stringify(data);
+                    location.assign("@Url.Action("MyProfile", "Account")")
+                },
+                error: function (data) {
+                    sessionStorage.removeItem("user");
+                    console.log(data);
+                    switch (data.status) {
+                        case 403:
+                        case 400:
+                        case 404:
+                            alert(JSON.parse(data.responseText).Message);
+                            break;
+                        default:
+                            alert('Ocurrió un imprevisto, para más detalles revisa la consola de desarrolladores');
+                            break;
+                    }
+                }
+            });
+        }
+
         function getProfileImage(fileName) {
             $("#avatar-preload").attr("src", "@Url.Action("GetProfilePhoto", "Agent")" + "?fileName=" + fileName)
         }
@@ -230,7 +264,7 @@
                 success: function (data) {
                     console.log("Theme:")
                     console.log(data);
-                    
+
                     setTheme(data);
                 },
                 error: function (data) {
@@ -262,7 +296,7 @@
         /// Used for get values from Query String
         /// http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-url-parameter#answer-979995
         var QueryString = function () {
-            // This function is anonymous, is executed immediately and 
+            // This function is anonymous, is executed immediately and
             // the return value is assigned to QueryString!
             var query_string = {};
             var query = window.location.search.substring(1);
