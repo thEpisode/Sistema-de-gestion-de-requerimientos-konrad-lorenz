@@ -6,7 +6,7 @@
 
 <p>Bienvenido, aquí podrás distintas tareas y entre las más comunes puedes acceder a las siguientes haciendo click encima de cada una.</p>
 
-<div class="row">
+<div class="row" id="direct-access">
     <a href="@Url.Action("MyRequirements","Requirement")">
         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
             <div class="info-box blue-bg">
@@ -51,7 +51,15 @@
 @section Scripts{
     <script>
         (function () {
-            getAgentsCount();
+            if (User.Role == 0) {
+                getAgentsCount();
+            }
+            else {
+                $("#direct-access>a:eq(1)").hide();
+                $("#direct-access>a:eq(2)").hide();
+                $("#direct-access>a:eq(3)").hide();
+            }
+            
 
             getRequirementsCount();
         })();

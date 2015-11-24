@@ -180,6 +180,9 @@
                 User = JSON.parse(sessionStorage.user);
 
                 /// Settings
+
+                // Set Navigation Bar
+                setNavigationBar();
                 // Get Profile image
                 getProfileImage(User.ProfileImageName);
                 // Change name
@@ -189,6 +192,18 @@
                 window.location.assign('@Url.Action("Index", "Home")');
             }
         })();
+
+        function setNavigationBar() {
+            if (User != undefined && User != null) {
+                if (User.Role == 1) {
+                    $(".sidebar-menu>li:eq(1)>ul>li:eq(0)").hide();
+                    $(".sidebar-menu>li:eq(2)").hide();
+                    $(".sidebar-menu>li:eq(3)").hide();
+                    $(".sidebar-menu>li:eq(4)").hide();
+                }
+                
+            }
+        }
 
         /// Change the default avatar to stored photo
         $('#avatar-preload').on('load', function () {
