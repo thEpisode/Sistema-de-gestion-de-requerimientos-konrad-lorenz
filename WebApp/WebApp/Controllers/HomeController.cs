@@ -60,12 +60,19 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<ActionResult> GetStatusTicket(string ticket)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("Ticket", ticket);
-            var document = await requirementsCollection.Find(filter).FirstOrDefaultAsync();
+            Requirement requirement = null;
 
-            if (document != null)
+            try
             {
-                Requirement requirement = BsonSerializer.Deserialize<Requirement>(document);
+                requirement = await GetStatusTicketService(ticket);
+            }
+            catch (Exception)
+            {
+                requirement = await GetStatusTicketService(ticket);
+            }
+
+            if (requirement != null)
+            {
                 Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(requirement, JsonRequestBehavior.AllowGet);
             }
@@ -78,6 +85,19 @@ namespace WebApp.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.OK;
             return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<Requirement> GetStatusTicketService(string ticket)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("Ticket", ticket);
+            var document = await requirementsCollection.Find(filter).FirstOrDefaultAsync();
+
+            if (document != null)
+            {
+                Requirement requirement = BsonSerializer.Deserialize<Requirement>(document);
+                return requirement;
+            }
+            return null;
         }
     }
 }

@@ -138,7 +138,14 @@ namespace WebApp.Controllers
                     Data = requirementDictionary
                 };
 
-                await requirementsCollection.InsertOneAsync(requirement.ToBsonDocument());
+                try
+                {
+                    await requirementsCollection.InsertOneAsync(requirement.ToBsonDocument());
+                }
+                catch (Exception)
+                {
+                    await requirementsCollection.InsertOneAsync(requirement.ToBsonDocument());
+                }
 
                 Response.StatusCode = (int)HttpStatusCode.Created;
                 return Json(ticketBuilder.ToString(), JsonRequestBehavior.AllowGet);
